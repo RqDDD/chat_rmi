@@ -14,13 +14,21 @@ public class Client {
 	
 	
 	public static void main(String[] args) {
-	   System.out.println("Lancement du client");
+	   System.out.println("Client launching...");
 	   String session = "true";
 	   String pseudo = null;
 	   Dialogue myDialogue = null;
+	   Connection myConnection = null;
 	   try {
-			myDialogue = (Dialogue) Naming.lookup("Dialogue");
-			System.out.println(myDialogue.getClients());
+			
+			myConnection = (Connection) Naming.lookup("Connection");
+			System.out.println("Client connected\n\n");
+			System.out.println("Several command available : \n");
+			System.out.println("connect");
+			System.out.println("disconnect");
+			System.out.println("send");
+			System.out.println("getC");
+			System.out.println("getM");
 	   } catch (MalformedURLException | RemoteException | NotBoundException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -36,10 +44,16 @@ public class Client {
 			System.out.println("Enter your pseudo: ");
 			pseudo = reader.nextLine(); 
 			//reader.close();
-			myDialogue.connect(pseudo);
+			myConnection.connect(pseudo);
+			try {
+				myDialogue = (Dialogue) Naming.lookup("Dialogue_"+pseudo);
+			} catch (NotBoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else if(line.equals("disconnect")) {
-			myDialogue.disconnect(pseudo);
+			myConnection.disconnect(pseudo);
 			session = "false";
 		}
 		
@@ -51,7 +65,7 @@ public class Client {
 			String message = reader.nextLine(); 
 			
 			//reader.close();
-			myDialogue.sendMessage(pseudo, to, message);
+			myDialogue.sendMessage(to, message);
 			
 		}
 		
@@ -61,7 +75,7 @@ public class Client {
 		}
 		
 		else if(line.equals("getM")) {
-			System.out.println(myDialogue.getMessages(pseudo));
+			System.out.println(myDialogue.getMessages());
 			
 		}
 		
@@ -78,6 +92,6 @@ public class Client {
 	   }
 	    
 	   
-	   System.out.println("Fin du client");
+	   System.out.println("Client end");
 	  }
 }

@@ -19,9 +19,9 @@ public class Server {
 		// TODO Auto-generated method stub
 		Server server = new Server();
 		try {
-			Dialogue myDialogue = new DialogueImpl(server);
+			Connection myConnection = new ConnectionImpl(server);
 			
-			Naming.rebind("Dialogue", myDialogue);
+			Naming.rebind("Connection", myConnection);
 			
 			System.out.println("Server online");
 			
