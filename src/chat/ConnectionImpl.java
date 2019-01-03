@@ -15,21 +15,24 @@ public class ConnectionImpl extends UnicastRemoteObject implements Connection{
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void connect(String pseudo ) {
+	public Emitter connect(String pseudo, Receiver rcv ) {
 		getServer().getListClients().add(pseudo); 
-		try {
-			Dialogue myDialogue = new DialogueImpl(server, pseudo);		
-			Naming.rebind("Dialogue_"+pseudo, myDialogue);
+		
+		Emitter myEmitter = null;
+		try {	
+			rcv.initClient(server.getListClients());
+			myEmitter = new EmitterImpl(pseudo); 
+			Naming.rebind("Emitter_"+pseudo, myEmitter);
 		} catch (RemoteException | MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		return myEmitter;
 	}
 	public void disconnect(String pseudo ) {
 		int i = 0;
 		try {
-			Naming.unbind("Connection"+"_"+pseudo);
+			Naming.unbind("Emitter"+"_"+pseudo);
 		} catch (RemoteException | MalformedURLException | NotBoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

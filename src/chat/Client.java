@@ -18,18 +18,21 @@ public class Client {
 	   String session = "true";
 	   String connectionStatus = "false";
 	   String pseudo = null;
-	   Dialogue myDialogue = null;
 	   Connection myConnection = null;
+	   Receiver myReceiver = null;
+	   Emitter myEmitter = null;
 	   try {
+		   
+			myReceiver = new ReceiverImpl();		
+			
 			
 			myConnection = (Connection) Naming.lookup("Connection");
 			System.out.println("Client connected\n\n");
-			System.out.println("Several command available : \n");
+			System.out.println("Several commands available : \n");
 			System.out.println("connect");
 			System.out.println("disconnect");
 			System.out.println("send");
-			System.out.println("getC");
-			System.out.println("getM");
+
 	   } catch (MalformedURLException | RemoteException | NotBoundException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -44,16 +47,16 @@ public class Client {
 			Scanner reader = new Scanner(System.in);  // Reading from System.in
 			System.out.println("Enter your pseudo: ");
 			pseudo = reader.nextLine(); 
+			
 			//reader.close();
-			myConnection.connect(pseudo);
-			try {
-				myDialogue = (Dialogue) Naming.lookup("Dialogue_"+pseudo);
+			myReceiver.setPseudo(pseudo);
+			myEmitter = myConnection.connect(pseudo, myReceiver);
+		
+				Naming.rebind("Receiver_"+pseudo, myReceiver);
 				connectionStatus = "true";
-			} catch (NotBoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	
 			}
-		}
+		
 		else if(line.equals("disconnect")) {
 			if (connectionStatus == "true") {
 				myConnection.disconnect(pseudo);
@@ -75,7 +78,7 @@ public class Client {
 				String message = reader.nextLine(); 
 				
 				//reader.close();
-				myDialogue.sendMessage(to, message);
+				myEmitter.sendMessage(to, message);
 			}
 			else {
 				System.out.println("Please connect first");
@@ -83,25 +86,6 @@ public class Client {
 			
 		}
 		
-		else if(line.equals("getC")) {
-			if (connectionStatus == "true") {
-				System.out.println(myDialogue.getClients());
-			}
-			else {
-				System.out.println("Please connect first");
-			}
-			
-		}
-		
-		else if(line.equals("getM")) {
-			if (connectionStatus == "true") {
-				System.out.println(myDialogue.getMessages());
-			}
-			else {
-				System.out.println("Please connect first");
-			}
-			
-		}
 		
 		
 		
