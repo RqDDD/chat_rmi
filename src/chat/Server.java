@@ -8,20 +8,24 @@ import java.util.ArrayList;
 public class Server {
 	
 	ArrayList<String> listClients; 
+	ArrayList<ClientConnection> listClientConnections; 
+	ArrayList<ClientManager> listClientManagers;
 	// message : { pseudo recipient, pseudo recipient, message }
 	ArrayList<ArrayList<String>> listMessages; // not the best way to store message...  could have used a map
 	public Server() {
 		this.listClients = new ArrayList();
 		this.listMessages = new ArrayList();
+		this.listClientConnections = new ArrayList();
+		this.listClientManagers = new ArrayList();
 	}
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Server server = new Server();
 		try {
-			Connection myConnection = new ConnectionImpl(server);
+			ServerConnection myServerConnection = new ServerConnectionImpl(server);
 			
-			Naming.rebind("Connection", myConnection);
+			Naming.rebind("ServerConnection", myServerConnection);
 			
 			System.out.println("Server online");
 			
@@ -34,6 +38,20 @@ public class Server {
 	public ArrayList<String> getListClients() {
 		return listClients;
 	}
+	
+	public ArrayList<ClientConnection> getListCC() {
+		return listClientConnections;
+	}
+	
+	public ArrayList<ClientManager> getListCM() {
+		return listClientManagers;
+	}
+	
+	public void addListCC(ClientConnection cc) {
+		listClientConnections.add(cc);
+	}
+	
+
 	
 	public ArrayList<ArrayList<String>> getListMessages() {
 		return listMessages;
